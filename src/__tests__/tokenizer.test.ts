@@ -18,6 +18,7 @@ compare(`
     token.CapitalizedWord("Jane"),
     token.CapitalizedWord("Doe"),
     token.FullStop(),
+    token.ParagraphEnd(),
   ]
 )
 
@@ -33,6 +34,7 @@ compare(`
     token.CapitalizedWord("Bond"),
     token.Title("Dr."),
     token.Title("Mrs."),
+    token.ParagraphEnd(),
   ]
 )
 
@@ -46,6 +48,7 @@ compare(`
     token.Title("Mrs."),
     token.CapitalizedWord("Doe"),
     token.FullStop(),
+    token.ParagraphEnd(),
   ]
 )
 
@@ -62,10 +65,12 @@ compare(`
     token.FullStop(),
     token.Quote("Final sentence."),
     token.FullStop(),
+    token.ParagraphEnd(),
     token.ParagraphStart(),
     token.CapitalizedWord("Jane"),
     token.CapitalizedWord("Doe"),
     token.FullStop(),
+    token.ParagraphEnd(),
   ]
 )
 
@@ -77,5 +82,6 @@ compare(`
     token.CapitalizedWord("Check"),
     token.ArticleLink("other.html"),
     token.FullStop(),
+    token.ParagraphEnd(),
   ]
 )

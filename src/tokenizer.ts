@@ -24,7 +24,10 @@ export class Tokenizer {
       } else if (isLink(child)) {
         this.tokenizeLinkElement(child);
       }
-    })
+    });
+    if (node.tagName === 'P') {
+      this.tokens.push(token.ParagraphEnd());
+    }
   }
 
   tokenizeLinkElement(link: HTMLAnchorElement) {
