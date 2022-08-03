@@ -2,7 +2,7 @@ import parse from 'node-html-parser';
 import { token, Token, Tokenizer } from '../tokenizer';
 
 const compare = (inputHtml: string, tokens: Token[]) => {
-  test('tokenize', () => {
+  test(inputHtml.trim().slice(0, 80), () => {
     const html = parse(inputHtml);
     expect(new Tokenizer(html).tokenize()).toEqual(tokens);
   });
@@ -15,7 +15,36 @@ compare(`
     token.ParagraphStart(),
     token.Quote("Hello,"),
     token.Keyword("said"),
-    token.Identifier("Jane Doe"),
+    token.CapitalizedWord("Jane"),
+    token.CapitalizedWord("Doe"),
+    token.FullStop(),
+  ]
+)
+
+compare(`
+  <p>Hello Mr. Bond James Bond Dr. Mrs.</p>
+`,
+  [
+    token.ParagraphStart(),
+    token.CapitalizedWord("Hello"),
+    token.Title("Mr."),
+    token.CapitalizedWord("Bond"),
+    token.CapitalizedWord("James"),
+    token.CapitalizedWord("Bond"),
+    token.Title("Dr."),
+    token.Title("Mrs."),
+  ]
+)
+
+compare(`
+  <p>“Hello,” said Mrs. Doe.</p>
+`,
+  [
+    token.ParagraphStart(),
+    token.Quote("Hello,"),
+    token.Keyword("said"),
+    token.Title("Mrs."),
+    token.CapitalizedWord("Doe"),
     token.FullStop(),
   ]
 )
@@ -28,12 +57,14 @@ compare(`
     token.ParagraphStart(),
     token.Quote("Hello world. Another sentence,"),
     token.Keyword("said"),
-    token.Identifier("Jane Doe"),
+    token.CapitalizedWord("Jane"),
+    token.CapitalizedWord("Doe"),
     token.FullStop(),
     token.Quote("Final sentence."),
     token.FullStop(),
     token.ParagraphStart(),
-    token.Identifier("Jane Doe"),
+    token.CapitalizedWord("Jane"),
+    token.CapitalizedWord("Doe"),
     token.FullStop(),
   ]
 )
@@ -43,7 +74,7 @@ compare(`
 `,
   [
     token.ParagraphStart(),
-    token.Identifier("Check"),
+    token.CapitalizedWord("Check"),
     token.ArticleLink("other.html"),
     token.FullStop(),
   ]

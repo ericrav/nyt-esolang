@@ -42,7 +42,6 @@ export class Tokenizer {
 
   tokenizeTextNode(node: TextNode) {
     this.text = node.innerText.trim();
-    console.log(this.text);
     this.textIndex = 0;
     while (this.textIndex < this.text.length) {
       this.scanToken();
@@ -70,7 +69,8 @@ export class Tokenizer {
       this.scanQuote() ||
       this.scanFullStop() ||
       this.scanKeyword() ||
-      this.scanIdentifier() ||
+      this.scanTitle() ||
+      this.scanCapitalizedWord() ||
       this.advance(1) // nothing found so advance one character
     );
   }
@@ -111,10 +111,20 @@ export class Tokenizer {
     return !!match;
   }
 
-  scanIdentifier() {
-    const match = this.peekRegex(/^((?:[A-Z][a-z]+\s?)+)/)
+  scanTitle() {
+    const match = this.peekRegex(/^((?:Dr|Mr|Mrs|Ms)\.)\s?/)
     if (match) {
-      this.add(token.Identifier(match[1].trim()));
+      this.add(token.Title(match[1]));
+      this.advance(match[0].length);
+    }
+
+    return !!match;
+  }
+
+  scanCapitalizedWord() {
+    const match = this.peekRegex(/^([A-Z][a-z]+)\s?/)
+    if (match) {
+      this.add(token.CapitalizedWord(match[1]));
       this.advance(match[0].length);
     }
 
@@ -127,10 +137,13 @@ const isLink = (node: Node | HTMLAnchorElement): node is HTMLAnchorElement => no
 export enum TokenType {
   Keyword = "Keyword",
   Quote = "Quote",
-  Identifier = "Identifier",
-  FullStop = "FullStop",
+  CapitalizedWord = "CapitalizedWord",
+  Title = "Title",
   ArticleLink = "ArticleLink",
+  FullStop = "FullStop",
+  Comma = "Comma",
   ParagraphStart = "ParagraphStart",
+  ParagraphEnd = "ParagraphEnd",
 }
 
 export class Token {
