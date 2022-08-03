@@ -48,3 +48,15 @@ compare(`
     token.FullStop(),
   ]
 )
+
+compare(`
+  <p>"Hello" said Jane Doe.</p>
+`,
+  [
+    token.ParagraphStart(),
+    token.Quote("Hello"),
+    token.Keyword("said"),
+    token.Identifier("Jane Doe"),
+    token.FullStop(),
+  ]
+)
