@@ -1,0 +1,87 @@
+body {
+  font-family: NYTImperial,nyt-imperial,georgia,'times new roman',times,serif;
+  color: #363636;
+  padding-top: 36px;
+  padding-bottom: 36px;
+}
+
+nav {
+  position: fixed;
+  background: white;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 36px;
+  padding: 10px 15px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #e2e2e2;
+}
+
+nav img {
+  height: 30px;
+  width: auto;
+}
+
+h1 {
+  width: 600px;
+  margin: auto;
+  font-size: 2.5rem;
+  line-height: 2.875rem;
+  color: #121212;
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+}
+
+header {
+  width: 600px;
+  margin: auto;
+  font-family: NYTCheltenham,nyt-cheltenham,georgia,'times new roman',times,serif;
+  margin-top: 3.75rem;
+  border-bottom: 1px solid #ebebeb;
+  padding-bottom: 20px;
+}
+
+header .summary {
+  width: 600px;
+  margin: auto;
+  margin-bottom: 1.875rem;
+  font-weight: 300;
+  font-size: 1.4375rem;
+  line-height: 1.875rem;
+}
+
+article {
+  width: 600px;
+  margin: auto;
+  margin-top: 36px;
+}
+
+article p {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  margin-bottom: 0.9375rem;
+  overflow-wrap: break-word;
+}
+
+a {
+  color: #326891;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+figure {
+  margin: 0;
+}
+
+figure figcaption {
+  color: #727272;
+  margin-top: 10px;
+  font-size: 0.9375rem;
+  line-height: 1.25rem;
+}
