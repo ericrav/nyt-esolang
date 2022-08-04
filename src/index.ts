@@ -11,7 +11,7 @@ function main() {
   const program = files.reduce((dict, filename) => {
     const file = readFileSync(path.join(folder, filename));
     const html = parse(file.toString());
-    const body = html.querySelector('body')!;
+    const body = html.querySelector('article')!;
     const tokenizer = new Tokenizer(body);
     const tokens = tokenizer.tokenize();
     const parser = new Parser(tokens);
