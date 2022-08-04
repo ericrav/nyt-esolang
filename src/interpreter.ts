@@ -121,6 +121,19 @@ export class Interpreter {
   evaluateStatement(statement: Statement) {
     const { left, action, right } = statement;
     const stack = this.getStack(left);
+
+    if (right) {
+      this.evaluateBinary(stack, action, this.getStack(right));
+    } else {
+      this.evaluateUnary(stack, action);
+    }
+  }
+
+  evaluateBinary(left: Stack, action: string, right: Stack) {
+
+  }
+
+  evaluateUnary(stack: Stack, action: string) {
     if (ADD.includes(action)) {
       stack.add();
     } else if (DUPLICATE.includes(action)) {
@@ -146,6 +159,7 @@ export class Interpreter {
     }
   }
 }
+
 
 function calculateQuoteValue(quotes: Quotes): number {
   const evenPart = quotes.firstQuote;
