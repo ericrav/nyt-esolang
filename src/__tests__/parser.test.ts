@@ -1,9 +1,9 @@
 import { Parser } from '../parser';
-import { Article, Graf, Identifier, Quotes } from '../syntax-types';
+import { Article, Graf, Identifier, Quotes, Statement } from '../syntax-types';
 import { token, Token } from '../tokenizer';
 
-test('parse', () => {
-  const tokens: Token[] = [
+test('quote', () => {
+  const parser = new Parser([
     token.ParagraphStart(),
     token.Quote('Hello world,'),
     token.Keyword('said'),
@@ -14,9 +14,7 @@ test('parse', () => {
     token.Quote('Latter quote.'),
     token.FullStop(),
     token.ParagraphEnd(),
-  ];
-
-  const parser = new Parser(tokens);
+  ]);
 
   expect(parser.parse()).toEqual(
     new Article([
@@ -28,6 +26,40 @@ test('parse', () => {
           'Latter quote.'
         ),
       ]),
+    ])
+  );
+});
+
+test('multi-graf', () => {
+  const parser = new Parser([
+    token.ParagraphStart(),
+    token.Quote('Some quote,'),
+    token.Keyword('added'),
+    token.Title('Mr.'),
+    token.CapitalizedWord('Smith'),
+    token.FullStop(),
+    token.ParagraphEnd(),
+    token.ParagraphStart(),
+    token.CapitalizedWord('But'),
+    token.Title('Mr.'),
+    token.CapitalizedWord('Smith'),
+    token.Keyword('confirmed'),
+    token.FullStop(),
+    token.ParagraphEnd(),
+  ]);
+
+  expect(parser.parse()).toEqual(
+    new Article([
+      new Graf([
+        new Quotes(
+          'Some quote,',
+          'added',
+          new Identifier('Smith'),
+        ),
+      ]),
+      new Graf([
+        new Statement(new Identifier('Smith'), 'confirmed')
+      ])
     ])
   );
 });

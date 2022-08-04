@@ -159,7 +159,7 @@ export class Token {
   }
 
   toString() {
-    return `${this.type}(${this.content})`;
+    return `${this.type}(${this.content || ''})`;
   }
 }
 

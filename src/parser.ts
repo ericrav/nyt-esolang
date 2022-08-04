@@ -1,4 +1,5 @@
-import { Article, Graf, Identifier, Quotes } from './syntax-types';
+import { descriptors } from './keywords';
+import { Article, Graf, Identifier, Quotes, Statement } from './syntax-types';
 import { Token, TokenType } from './tokenizer';
 
 export class Parser {
@@ -38,11 +39,23 @@ export class Parser {
     return false;
   }
 
+  matchKeyword(keywords: string[]) {
+    if (
+      !this.isAtEnd() &&
+      this.peek().type === TokenType.Keyword &&
+      keywords.includes(this.peek().content!)
+    ) {
+      this.advance();
+      return true;
+    }
+    return false;
+  }
+
   get(type: TokenType): Token {
     if (this.match(type)) {
       return this.previous();
     } else {
-      throw new Error(`Expected token type ${type} at ${this.peek()}`)
+      throw new Error(`Expected token type ${type} at ${this.peek()}`);
     }
   }
 
@@ -54,7 +67,8 @@ export class Parser {
     try {
       return this.article();
     } catch (e) {
-      throw new Error(e.message + '\n' + this.steps.join('\n'));
+      e.message += '\n' + this.steps.join('\n');
+      throw e;
     }
   }
 
@@ -73,7 +87,11 @@ export class Parser {
     this.addStep('graf');
     const children: any = [];
     while (!this.match(TokenType.ParagraphEnd)) {
-      children.push(this.quotes());
+      if (this.peek().type === TokenType.Quote) {
+        children.push(this.quotes());
+      } else {
+        children.push(this.statement());
+      }
     }
 
     return new Graf(children);
@@ -95,18 +113,27 @@ export class Parser {
     return new Quotes(startingQuote!, verb, identifier, endingQuote);
   }
 
+  statement() {
+    this.addStep('statement');
+    const identifier = this.identifier();
+    const action = this.get(TokenType.Keyword).content!;
+    this.eat(TokenType.FullStop);
+
+    return new Statement(identifier, action);
+  }
+
   identifier() {
+    this.addStep('identifier');
     let lastName = '';
     while (this.match(TokenType.Title, TokenType.CapitalizedWord)) {
       lastName = this.previous().content!;
     }
 
     let descriptor: string | undefined;
-    if (this.match(TokenType.Keyword)) {
+    if (this.matchKeyword(descriptors)) {
       descriptor = this.previous().content!;
     }
 
-    this.addStep('identifier');
     return new Identifier(lastName, descriptor);
   }
 }
