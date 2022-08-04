@@ -9,8 +9,8 @@ test('parse', () => {
     token.Keyword('said'),
     token.CapitalizedWord('Jane'),
     token.CapitalizedWord('Doe'),
+    token.Keyword('lawyer'),
     token.FullStop(),
-    // token.Keyword('lawyer'),
     token.Quote('Latter quote.'),
     token.FullStop(),
     token.ParagraphEnd(),
@@ -24,7 +24,7 @@ test('parse', () => {
         new Quotes(
           'Hello world,',
           'said',
-          new Identifier('Doe'),
+          new Identifier('Doe', 'lawyer'),
           'Latter quote.'
         ),
       ]),

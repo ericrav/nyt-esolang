@@ -101,7 +101,12 @@ export class Parser {
       lastName = this.previous().content!;
     }
 
+    let descriptor: string | undefined;
+    if (this.match(TokenType.Keyword)) {
+      descriptor = this.previous().content!;
+    }
+
     this.addStep('identifier');
-    return new Identifier(lastName);
+    return new Identifier(lastName, descriptor);
   }
 }
