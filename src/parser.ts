@@ -77,7 +77,10 @@ export class Parser {
     const grafs: Graf[] = [];
 
     while (this.match(TokenType.ParagraphStart)) {
-      grafs.push(this.graf());
+      const graf = this.graf();
+      if (graf.children.length > 0) {
+        grafs.push(graf);
+      }
     }
 
     return new Article(grafs);
@@ -90,7 +93,22 @@ export class Parser {
       if (this.peek().type === TokenType.Quote) {
         children.push(this.quotes());
       } else {
-        children.push(this.statement());
+        try {
+          children.push(this.statement());
+        } catch {
+          if (this.peek().type === TokenType.FullStop) {
+            this.advance();
+          } else {
+            while (
+              !this.isAtEnd() &&
+              ![TokenType.FullStop, TokenType.ParagraphEnd].includes(
+                this.peek().type
+              )
+            ) {
+              this.advance();
+            }
+          }
+        }
       }
     }
 

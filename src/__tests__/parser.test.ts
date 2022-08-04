@@ -63,3 +63,34 @@ test('multi-graf', () => {
     ])
   );
 });
+
+test('ignore junk grafs', () => {
+  const parser = new Parser([
+    token.ParagraphStart(),
+    token.Quote('Some quote,'),
+    token.Keyword('said'),
+    token.Title('Mr.'),
+    token.CapitalizedWord('Smith'),
+    token.FullStop(),
+    token.ParagraphEnd(),
+    token.ParagraphStart(),
+    token.CapitalizedWord('However'),
+    token.FullStop(),
+    token.ParagraphEnd(),
+    token.ParagraphStart(),
+    token.ParagraphEnd(),
+  ]);
+
+  expect(parser.parse()).toEqual(
+    new Article([
+      new Graf([
+        new Quotes(
+          'Some quote,',
+          'said',
+          new Identifier('Smith'),
+        ),
+      ]),
+    ])
+  );
+});
+
