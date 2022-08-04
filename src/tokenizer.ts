@@ -6,7 +6,7 @@ export class Tokenizer {
   tokens: Token[] = [];
 
   constructor(html: HTMLElement) {
-    this.htmlNodes = html.querySelectorAll('p');
+    this.htmlNodes = html.querySelectorAll('p,figure');
   }
 
   tokenize(): Array<Token> {
@@ -16,9 +16,16 @@ export class Tokenizer {
   }
 
   tokenizeHTMLNode(node: HTMLElement) {
+    let startToken, endToken;
     if (node.tagName === 'P') {
-      this.tokens.push(token.ParagraphStart());
+      startToken = token.ParagraphStart();
+      endToken = token.ParagraphEnd()
+    } else if (node.tagName === 'FIGURE') {
+      startToken = token.FigureStart();
+      endToken = token.FigureEnd();
+      node = node.querySelector('figcaption') || node;
     }
+    this.tokens.push(startToken);
     node.childNodes.forEach(child => {
       if (child instanceof TextNode) {
         this.tokenizeTextNode(child);
@@ -26,16 +33,13 @@ export class Tokenizer {
         this.tokenizeLinkElement(child);
       }
     });
-    if (node.tagName === 'P') {
-      this.tokens.push(token.ParagraphEnd());
-    }
+
+    this.tokens.push(endToken);
   }
 
   tokenizeLinkElement(link: HTMLAnchorElement) {
     this.tokens.push(token.ArticleLink(link.getAttribute('href')!));
   }
-
-
 
   /*
   Plain-text scanning methods (using more typical Scanner/Tokenizer patterns : no more HTML)
@@ -146,6 +150,8 @@ export enum TokenType {
   ArticleLink = "ArticleLink",
   FullStop = "FullStop",
   Comma = "Comma",
+  FigureStart = "FigureStart",
+  FigureEnd = "FigureEnd",
   ParagraphStart = "ParagraphStart",
   ParagraphEnd = "ParagraphEnd",
 }

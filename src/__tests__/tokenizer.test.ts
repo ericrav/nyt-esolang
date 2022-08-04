@@ -85,3 +85,25 @@ compare(`
     token.ParagraphEnd(),
   ]
 )
+
+compare(`
+  <p>Graf 1.</p>
+  <figure>
+    <img src="">
+    <figcaption>
+      James Bond.
+    </figcaption>
+  </figure>
+`,
+  [
+    token.ParagraphStart(),
+    token.CapitalizedWord("Graf"),
+    token.FullStop(),
+    token.ParagraphEnd(),
+    token.FigureStart(),
+    token.CapitalizedWord('James'),
+    token.CapitalizedWord('Bond'),
+    token.FullStop(),
+    token.FigureEnd(),
+  ]
+)
