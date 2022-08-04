@@ -1,5 +1,5 @@
 import { ADD, asciiDescriptors, DUPLICATE, GOTO, PRINT } from './keywords';
-import { Article, Graf, Identifier, Label, Quotes, Statement } from './syntax-types';
+import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from './syntax-types';
 
 class Stack {
   stack: number[] = [];
@@ -60,7 +60,7 @@ interface IO {
 export class Interpreter {
   public symbolTable = new SymbolTable();
 
-  constructor(private ast: Article, private io: IO) {}
+  constructor(private ast: Article, private io: IO, private program: Record<string, Article> = {}) {}
 
   index = 0;
 
@@ -81,6 +81,8 @@ export class Interpreter {
           this.evaluateQuotes(child);
         } else if (child instanceof Statement) {
           this.evaluateStatement(child);
+        } else if (child instanceof Link) {
+          this.evaluateLink(child);
         }
       } else if (graf instanceof Label) {
         const name = graf.identifier.name;
@@ -107,6 +109,13 @@ export class Interpreter {
     if (ADD.includes(quotes.verb)) {
       stack.add();
     }
+  }
+
+  evaluateLink(link: Link) {
+    const article = link.href;
+    const interpreter = new Interpreter(this.program[article], this.io, this.program);
+    interpreter.symbolTable = this.symbolTable;
+    interpreter.evaluate();
   }
 
   evaluateStatement(statement: Statement) {

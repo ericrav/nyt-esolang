@@ -1,5 +1,5 @@
 import { Interpreter } from "../interpreter"
-import { Article, Graf, Identifier, Quotes } from "../syntax-types";
+import { Article, Graf, Identifier, Link, Quotes } from "../syntax-types";
 
 test('pushing values', () => {
   const article = new Article([
@@ -30,5 +30,41 @@ test('pushing values', () => {
     11,
     17,
     4,
+  ]);
+});
+
+test('links', () => {
+  const article1 = new Article([
+    new Graf([new Quotes("One two three. One,", "said", new Identifier("A"))]),
+    new Graf([new Link('article2')]),
+    new Graf([new Quotes("One two,", "said", new Identifier("A"))]),
+    new Graf([new Quotes("One,", "said", new Identifier("C"))]),
+  ]);
+  const article2 = new Article([
+    new Graf([new Quotes("One two,", "said", new Identifier("B"))]),
+    new Graf([new Link('article3')]),
+    new Graf([new Quotes("One,", "said", new Identifier("A"))]),
+  ]);
+  const article3 = new Article([
+    new Graf([new Quotes("One two three,", "said", new Identifier("B"))]),
+    new Graf([new Quotes("One two,", "said", new Identifier("C"))]),
+  ]);
+  const interpreter = new Interpreter(article1, { input: () => '', output: console.log }, { article2, article3});
+  interpreter.evaluate();
+
+  expect(interpreter.symbolTable.get('A').stack).toEqual([
+    10,
+    2,
+    4,
+  ]);
+
+  expect(interpreter.symbolTable.get('B').stack).toEqual([
+    4,
+    8,
+  ]);
+
+  expect(interpreter.symbolTable.get('C').stack).toEqual([
+    4,
+    2
   ]);
 });
