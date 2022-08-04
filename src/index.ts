@@ -4,7 +4,8 @@ import { Tokenizer } from './tokenizer';
 import { Parser } from './parser';
 import { Interpreter } from './interpreter';
 
-function main(filename: string) {
+function main() {
+  const filename = process.argv[2];
   const file = readFileSync(filename);
   const html = parse(file.toString());
   const body = html.querySelector('body')!;
@@ -20,4 +21,4 @@ function main(filename: string) {
   process.stdout.write('\n');
 }
 
-main('examples/hello_world/main.html');
+main();
