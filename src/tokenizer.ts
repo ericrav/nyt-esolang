@@ -105,7 +105,7 @@ export class Tokenizer {
   }
 
   scanKeyword() {
-    const match = this.peekRegex(/^(said)\s/)
+    const match = this.peekRegex(/^(said|added)\s/)
     if (match) {
       this.add(token.Keyword(match[1]));
       this.advance(match[0].length);
@@ -151,11 +151,15 @@ export enum TokenType {
 
 export class Token {
   type: TokenType;
-  lexeme?: string;
+  content?: string;
 
-  constructor(type: TokenType, lexeme?: string) {
+  constructor(type: TokenType, content?: string) {
     this.type = type;
-    if (lexeme) this.lexeme = lexeme;
+    if (content) this.content = content;
+  }
+
+  toString() {
+    return `${this.type}(${this.content})`;
   }
 }
 
