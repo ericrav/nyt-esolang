@@ -1,5 +1,5 @@
 import { Parser } from '../parser';
-import { Article, Graf, Identifier, Label, Quotes, Statement } from '../syntax-types';
+import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from '../syntax-types';
 import { token } from '../tokenizer';
 
 test('quote', () => {
@@ -25,6 +25,32 @@ test('quote', () => {
           new Identifier('Doe', 'lawyer'),
           'Latter quote.'
         ),
+      ]),
+    ])
+  );
+});
+
+test('link', () => {
+  const parser = new Parser([
+    token.ParagraphStart(),
+    token.CapitalizedWord('Jane'),
+    token.CapitalizedWord('Doe'),
+    token.Keyword('said'),
+    token.FullStop(),
+    token.CapitalizedWord('So'),
+    token.ArticleLink("foo.html"),
+    token.FullStop(),
+    token.ParagraphEnd(),
+  ]);
+
+  expect(parser.parse()).toEqual(
+    new Article([
+      new Graf([
+        new Statement(
+          new Identifier('Doe'),
+          'said',
+        ),
+        new Link("foo.html"),
       ]),
     ])
   );

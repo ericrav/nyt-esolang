@@ -1,5 +1,5 @@
 import { ADD, asciiDescriptors, DUPLICATE, GOTO, PRINT } from './keywords';
-import { Article, Graf, Identifier, Label, Quotes, Statement } from './syntax-types';
+import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from './syntax-types';
 
 class Stack {
   stack: number[] = [];
@@ -60,14 +60,16 @@ interface IO {
 export class Interpreter {
   public symbolTable = new SymbolTable();
 
-  constructor(private ast: Article, private io: IO) {}
+  constructor(private ast: Article, private io: IO, private program: Record<string, Article> = {}) {}
 
   index = 0;
 
   labels: Record<string, number> = {};
 
   debug(msg: string) {
-    console.log("\nDebug: " + msg + " ");
+    if (process.env.DEBUG) {
+      console.log("\nDebug: " + msg + " ");
+    }
   }
 
   evaluate() {
@@ -79,6 +81,8 @@ export class Interpreter {
           this.evaluateQuotes(child);
         } else if (child instanceof Statement) {
           this.evaluateStatement(child);
+        } else if (child instanceof Link) {
+          this.evaluateLink(child);
         }
       } else if (graf instanceof Label) {
         const name = graf.identifier.name;
@@ -107,9 +111,29 @@ export class Interpreter {
     }
   }
 
+  evaluateLink(link: Link) {
+    const article = link.href;
+    const interpreter = new Interpreter(this.program[article], this.io, this.program);
+    interpreter.symbolTable = this.symbolTable;
+    interpreter.evaluate();
+  }
+
   evaluateStatement(statement: Statement) {
     const { left, action, right } = statement;
     const stack = this.getStack(left);
+
+    if (right) {
+      this.evaluateBinary(stack, action, this.getStack(right));
+    } else {
+      this.evaluateUnary(stack, action);
+    }
+  }
+
+  evaluateBinary(left: Stack, action: string, right: Stack) {
+
+  }
+
+  evaluateUnary(stack: Stack, action: string) {
     if (ADD.includes(action)) {
       stack.add();
     } else if (DUPLICATE.includes(action)) {
@@ -136,7 +160,8 @@ export class Interpreter {
   }
 }
 
-function calculateQuoteValue(quotes: Quotes): number {
+
+export function calculateQuoteValue(quotes: Quotes): number {
   const evenPart = quotes.firstQuote;
 
   const calculate = (quote: string): number => {

@@ -1,5 +1,5 @@
 import { descriptors } from './keywords';
-import { Article, Graf, Identifier, Label, Quotes, Statement } from './syntax-types';
+import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from './syntax-types';
 import { Token, TokenType } from './tokenizer';
 
 export class Parser {
@@ -100,7 +100,7 @@ export class Parser {
         children.push(this.quotes());
       } else {
         try {
-          children.push(this.statement());
+          children.push(this.grafSentence());
         } catch {
           if (this.peek().type === TokenType.FullStop) {
             this.advance();
@@ -147,6 +147,22 @@ export class Parser {
     return new Quotes(startingQuote!, verb, identifier, endingQuote);
   }
 
+
+  grafSentence() {
+    const tokens: Token[] = [];
+    const current = this.index;
+    while (!this.match(TokenType.FullStop)) {
+      tokens.push(this.advance());
+    }
+
+    this.index = current;
+    if (tokens.some(token => token.type === TokenType.ArticleLink)) {
+      return this.link()
+    } else {
+      return this.statement();
+    }
+  }
+
   statement() {
     this.addStep('statement');
     const identifier = this.identifier();
@@ -154,6 +170,17 @@ export class Parser {
     this.eat(TokenType.FullStop);
 
     return new Statement(identifier, action);
+  }
+
+  link() {
+    this.addStep('link');
+    while (!this.match(TokenType.ArticleLink)) {
+      this.advance();
+    }
+    const link = this.previous().content!;
+    this.eat(TokenType.FullStop);
+
+    return new Link(link);
   }
 
   identifier() {
