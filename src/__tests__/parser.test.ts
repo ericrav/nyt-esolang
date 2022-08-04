@@ -1,6 +1,6 @@
 import { Parser } from '../parser';
 import { Article, Graf, Identifier, Quotes, Statement } from '../syntax-types';
-import { token, Token } from '../tokenizer';
+import { token } from '../tokenizer';
 
 test('quote', () => {
   const parser = new Parser([
