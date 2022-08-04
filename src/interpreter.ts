@@ -1,4 +1,4 @@
-import { ADD, asciiDescriptors, DUPLICATE, GOTO, PRINT } from './keywords';
+import { ADD, asciiDescriptors, DUPLICATE, GOTO, MOVE, PRINT } from './keywords';
 import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from './syntax-types';
 
 class Stack {
@@ -130,7 +130,11 @@ export class Interpreter {
   }
 
   evaluateBinary(left: Stack, action: string, right: Stack) {
-
+    if (MOVE.includes(action)) {
+      // remove top item in left and add to right 
+      right.push(left.pop());
+    }  
+    // else if (CLEAR.includes(action)) { }
   }
 
   evaluateUnary(stack: Stack, action: string) {
@@ -149,7 +153,10 @@ export class Interpreter {
       } else {
         this.io.output(String(val));
       }
-    } else if (GOTO.includes(action)) {
+    } else if (action === "said") {
+      stack.push(1);
+    }
+    else if (GOTO.includes(action)) {
       if (!stack.empty() && this.labels[stack.name]) {
         this.index = this.labels[stack.name];
         this.debug('GOTO ' + this.index);
