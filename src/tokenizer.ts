@@ -1,4 +1,5 @@
 import { parse, TextNode, Node, HTMLElement } from 'node-html-parser';
+import { keywords } from './keywords';
 
 export class Tokenizer {
   htmlNodes: HTMLElement[];
@@ -105,7 +106,7 @@ export class Tokenizer {
   }
 
   scanKeyword() {
-    const match = this.peekRegex(/^(said|added)\s/)
+    const match = this.peekRegex(new RegExp(`^(${keywords.join('|')})\\s?`))
     if (match) {
       this.add(token.Keyword(match[1]));
       this.advance(match[0].length);
