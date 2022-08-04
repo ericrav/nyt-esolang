@@ -1,5 +1,5 @@
 import { Parser } from '../parser';
-import { Article, Graf, Identifier, Quotes, Statement } from '../syntax-types';
+import { Article, Graf, Identifier, Label, Quotes, Statement } from '../syntax-types';
 import { token } from '../tokenizer';
 
 test('quote', () => {
@@ -60,6 +60,36 @@ test('multi-graf', () => {
       new Graf([
         new Statement(new Identifier('Smith'), 'confirmed')
       ])
+    ])
+  );
+});
+
+test('figure', () => {
+  const parser = new Parser([
+    token.ParagraphStart(),
+    token.Quote('Some quote,'),
+    token.Keyword('added'),
+    token.Title('Mr.'),
+    token.CapitalizedWord('Bond'),
+    token.FullStop(),
+    token.ParagraphEnd(),
+    token.FigureStart(),
+    token.CapitalizedWord('James'),
+    token.CapitalizedWord('Bond'),
+    token.FullStop(),
+    token.FigureEnd(),
+  ]);
+
+  expect(parser.parse()).toEqual(
+    new Article([
+      new Graf([
+        new Quotes(
+          'Some quote,',
+          'added',
+          new Identifier('Bond'),
+        ),
+      ]),
+      new Label(new Identifier('Bond')),
     ])
   );
 });

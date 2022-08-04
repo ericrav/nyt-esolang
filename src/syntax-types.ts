@@ -1,5 +1,5 @@
 export class Article {
-  constructor(public grafs: Graf[]) {}
+  constructor(public grafs: (Graf | Label)[]) {}
 }
 
 export class Graf {
@@ -21,4 +21,8 @@ export class Statement {
 
 export class Identifier {
   constructor(public name: string, public descriptor?: string) {}
+}
+
+export class Label {
+  constructor(public identifier: Identifier) {};
 }

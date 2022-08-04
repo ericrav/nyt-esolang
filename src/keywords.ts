@@ -3,7 +3,8 @@ export const quoteWords = ["said", "added"];
 export const ADD = ["added"];
 export const DUPLICATE = ["confirmed", "can confirm"];
 export const PRINT = ["announced", "signed"];
-export const unaryActions = [...ADD, ...DUPLICATE, ...PRINT];
+export const GOTO = ["goto"]
+export const unaryActions = [...ADD, ...DUPLICATE, ...PRINT, ...GOTO];
 
 export const binaryActions = ["gave", "told"];
 

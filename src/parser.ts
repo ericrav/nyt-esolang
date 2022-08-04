@@ -1,5 +1,5 @@
 import { descriptors } from './keywords';
-import { Article, Graf, Identifier, Quotes, Statement } from './syntax-types';
+import { Article, Graf, Identifier, Label, Quotes, Statement } from './syntax-types';
 import { Token, TokenType } from './tokenizer';
 
 export class Parser {
@@ -74,16 +74,22 @@ export class Parser {
 
   article() {
     this.addStep('article');
-    const grafs: Graf[] = [];
+    const articleChildren: (Graf | Label)[] = [];
 
-    while (this.match(TokenType.ParagraphStart)) {
-      const graf = this.graf();
-      if (graf.children.length > 0) {
-        grafs.push(graf);
+    while (this.match(TokenType.ParagraphStart, TokenType.FigureStart)) {
+      const type = this.previous().type;
+      if (type === TokenType.ParagraphStart) {
+        const graf = this.graf()
+        if (graf.children.length > 0) {
+          articleChildren.push(graf);
+        }
+      } else if (type === TokenType.FigureStart) {
+        const label = this.figure();
+        articleChildren.push(label);
       }
     }
 
-    return new Article(grafs);
+    return new Article(articleChildren);
   }
 
   graf() {
@@ -113,6 +119,16 @@ export class Parser {
     }
 
     return new Graf(children);
+  }
+
+  figure() {
+    this.addStep('figure');
+    const identifier = this.identifier();
+    while (!this.match(TokenType.FigureEnd)) {
+      this.advance();
+    }
+
+    return new Label(identifier);
   }
 
   quotes() {

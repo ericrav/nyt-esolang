@@ -1,5 +1,5 @@
-import { ADD, asciiDescriptors, DUPLICATE, PRINT } from './keywords';
-import { Article, Graf, Identifier, Quotes, Statement } from './syntax-types';
+import { ADD, asciiDescriptors, DUPLICATE, GOTO, PRINT } from './keywords';
+import { Article, Graf, Identifier, Label, Quotes, Statement } from './syntax-types';
 
 class Stack {
   stack: number[] = [];
@@ -15,6 +15,10 @@ class Stack {
 
   add() {
     this.push(this.pop() + this.pop());
+  }
+
+  empty() {
+    return this.stack.length === 0;
   }
 }
 
@@ -60,14 +64,21 @@ export class Interpreter {
 
   index = 0;
 
+  labels: Record<string, number> = {};
+
   evaluate() {
     while (this.index < this.ast.grafs.length) {
       const graf = this.ast.grafs[this.index++];
-      const [child] = graf.children;
-      if (child instanceof Quotes) {
-        this.evaluateQuotes(child);
-      } else if (child instanceof Statement) {
-        this.evaluateStatement(child);
+      if (graf instanceof Graf) {
+        const [child] = graf.children;
+        if (child instanceof Quotes) {
+          this.evaluateQuotes(child);
+        } else if (child instanceof Statement) {
+          this.evaluateStatement(child);
+        }
+      } else if (graf instanceof Label) {
+        const name = graf.identifier.name;
+        this.labels[name] = this.index;
       }
     }
   }
@@ -106,6 +117,10 @@ export class Interpreter {
         this.io.output(String.fromCharCode(val));
       } else {
         this.io.output(String(val));
+      }
+    } else if (GOTO.includes(action)) {
+      if (!stack.empty() && this.labels[stack.name]) {
+        this.index = this.labels[stack.name];
       }
     }
   }
