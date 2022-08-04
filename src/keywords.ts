@@ -4,12 +4,14 @@ export const ADD = ["added"];
 export const DUPLICATE = ["confirmed", "can confirm"];
 export const PRINT = ["announced", "signed"];
 export const GOTO = ["goto"];
+// export const EQUALS = ["equals"];
 // export const GOTO_IF_NOT_EMPTY = ["goto"];
 // export const GOTO_IF_ZERO = ["goto"];
 // export const GOTO_IF_NOT_ZERO = ["goto"];
 export const unaryActions = [...ADD, ...DUPLICATE, ...PRINT, ...GOTO];
 
-export const binaryActions = ["gave", "told"];
+export const MOVE = ["gave", "told"];
+export const binaryActions = [...MOVE];
 
 export const asciiDescriptors = ["lawyer", "actor", "actress"]
 export const numericDescriptors = ["scientist"]
