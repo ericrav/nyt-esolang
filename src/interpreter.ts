@@ -66,6 +66,10 @@ export class Interpreter {
 
   labels: Record<string, number> = {};
 
+  debug(msg: string) {
+    console.log("\nDebug: " + msg + " ");
+  }
+
   evaluate() {
     while (this.index < this.ast.grafs.length) {
       const graf = this.ast.grafs[this.index++];
@@ -97,6 +101,7 @@ export class Interpreter {
     );
     const value = calculateQuoteValue(quotes);
     stack.push(value);
+    this.debug('PUSH ' + value + " " + stack.name);
     if (ADD.includes(quotes.verb)) {
       stack.add();
     }
@@ -108,11 +113,13 @@ export class Interpreter {
     if (ADD.includes(action)) {
       stack.add();
     } else if (DUPLICATE.includes(action)) {
+      this.debug('DUPLICATE ' + stack.name);
       const val = stack.pop();
       stack.push(val);
       stack.push(val);
     } else if (PRINT.includes(action)) {
       const val = stack.pop();
+      this.debug('PRINT ' + val);
       if (stack.varType === VarType.ASCII) {
         this.io.output(String.fromCharCode(val));
       } else {
@@ -121,6 +128,9 @@ export class Interpreter {
     } else if (GOTO.includes(action)) {
       if (!stack.empty() && this.labels[stack.name]) {
         this.index = this.labels[stack.name];
+        this.debug('GOTO ' + this.index);
+      } else {
+        this.debug('Stack empty')
       }
     }
   }
