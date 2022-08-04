@@ -67,7 +67,9 @@ export class Interpreter {
   labels: Record<string, number> = {};
 
   debug(msg: string) {
-    console.log("\nDebug: " + msg + " ");
+    if (process.env.DEBUG) {
+      console.log("\nDebug: " + msg + " ");
+    }
   }
 
   evaluate() {

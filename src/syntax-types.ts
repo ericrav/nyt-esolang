@@ -3,7 +3,7 @@ export class Article {
 }
 
 export class Graf {
-  constructor(public children: [Quotes | Statement]) {}
+  constructor(public children: [Quotes] | (Statement | Link)[]) {}
 }
 
 export class Quotes {
@@ -25,4 +25,8 @@ export class Identifier {
 
 export class Label {
   constructor(public identifier: Identifier) {};
+}
+
+export class Link {
+  constructor(public href: string) {}
 }
