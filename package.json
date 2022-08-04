@@ -16,6 +16,7 @@
   },
   "scripts": {
     "start": "ts-node src/index.ts",
+    "quotecheck": "ts-node src/quotecheck.ts",
     "test": "jest --watch"
   }
 }

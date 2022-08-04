@@ -161,7 +161,7 @@ export class Interpreter {
 }
 
 
-function calculateQuoteValue(quotes: Quotes): number {
+export function calculateQuoteValue(quotes: Quotes): number {
   const evenPart = quotes.firstQuote;
 
   const calculate = (quote: string): number => {
