@@ -1,5 +1,5 @@
 import { Interpreter } from "../interpreter"
-import { Article, Graf, Identifier, Link, Quotes } from "../syntax-types";
+import { Article, Graf, Identifier, Link, Quotes, Statement } from "../syntax-types";
 
 test('pushing values', () => {
   const article = new Article([
@@ -67,4 +67,26 @@ test('links', () => {
     4,
     2
   ]);
+});
+
+
+test('two stacks operations', () => {
+  const article = new Article([
+    new Graf([new Quotes("quote", "said", new Identifier("D"))]),
+    new Graf([new Quotes("quote", "said", new Identifier("E"))]),
+    new Graf([new Statement(new Identifier("D"), "gave", new Identifier("E"))]),
+ 
+  ]);
+  const interpreter = new Interpreter(article, { input: () => '', output: console.log });
+  interpreter.evaluate();
+
+  expect(interpreter.symbolTable.get('D').stack).toEqual([
+  
+ ]);
+
+  expect(interpreter.symbolTable.get('E').stack).toEqual([
+    2,
+    2
+  ]);
+
 });

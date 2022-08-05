@@ -11,7 +11,7 @@ export class Quotes {
     public firstQuote: string,
     public verb: string,
     public identifier: Identifier,
-    public lastQuote?: string,
+    public lastQuote?: string
   ) {}
 }
 
