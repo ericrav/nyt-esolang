@@ -1,4 +1,4 @@
-import { descriptors } from './keywords';
+import { binaryActions, descriptors } from './keywords';
 import { Article, Graf, Identifier, Label, Link, Quotes, Statement } from './syntax-types';
 import { Token, TokenType } from './tokenizer';
 
@@ -167,9 +167,13 @@ export class Parser {
     this.addStep('statement');
     const identifier = this.identifier();
     const action = this.get(TokenType.Keyword).content!;
+    let right;
+    if (binaryActions.includes(action)){
+      right = this.identifier();
+    }
     this.eat(TokenType.FullStop);
 
-    return new Statement(identifier, action);
+    return new Statement(identifier, action, right);
   }
 
   link() {
