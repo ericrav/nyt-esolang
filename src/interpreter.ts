@@ -113,9 +113,11 @@ export class Interpreter {
 
   evaluateLink(link: Link) {
     const article = link.href;
+    this.debug('LINK ' + article);
     const interpreter = new Interpreter(this.program[article], this.io, this.program);
     interpreter.symbolTable = this.symbolTable;
     interpreter.evaluate();
+    this.debug('RETURN from ' + article);
   }
 
   evaluateStatement(statement: Statement) {
